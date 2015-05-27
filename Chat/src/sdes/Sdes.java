@@ -25,13 +25,15 @@ public class Sdes{
 		Criptografia cripto  = new Criptografia();
 		StringBuilder sb = new StringBuilder();
 		int ch;
+		byte[] saida = new byte[texto.length()];
 		
 		for(int i=0;i<texto.length();i++){
 			ch = texto.charAt(i);
 			binario = String.format("%8s",Integer.toBinaryString(ch)).replace(' ','0');
 			output = cripto.criptografar( binario, chaveBuilder.getK1(), chaveBuilder.getK2());
-			ch = Integer.parseInt(output,2);
-			sb.append((char)ch);
+			//ch = Integer.parseInt(output,2);
+			//sb.append((char)ch);
+			saida = output.getBytes();
 		}
 		return sb.toString();
 	}

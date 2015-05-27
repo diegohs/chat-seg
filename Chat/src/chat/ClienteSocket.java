@@ -20,7 +20,7 @@ public class ClienteSocket extends Thread {
         try {
             Socket socket = new Socket("127.0.0.1", 3000);
             PrintStream saida = new PrintStream(socket.getOutputStream());
-            BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in,"ISO-8859-1"));
+            BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in,"UTF-8"));
             System.out.print("Digite seu nome: ");
             String meuNome = teclado.readLine();
             saida.println(meuNome.toUpperCase());
@@ -33,10 +33,10 @@ public class ClienteSocket extends Thread {
                 System.out.print("Mensagem > ");
                 msg = teclado.readLine();
                 Rc4 rc4 = new Rc4("e04fd020ea3a6910a2d808002b30309d");    	
-                msgCriptografada = rc4.encrypt(msg.getBytes(Charset.forName("ISO-8859-1")));
+                msgCriptografada = rc4.encrypt(msg.getBytes(Charset.forName("UTF-8")));
                 
                 try{
-                    msg = new String(msgCriptografada, "ISO-8859-1");
+                    msg = new String(msgCriptografada, "UTF-8");
                     saida.println(msg);
                 }
                 catch(UnsupportedEncodingException e){
@@ -51,17 +51,17 @@ public class ClienteSocket extends Thread {
     public void run()
     {
         try {
-            BufferedReader entrada = new BufferedReader(new InputStreamReader(this.conexao.getInputStream(),"ISO-8859-1"));
+            BufferedReader entrada = new BufferedReader(new InputStreamReader(this.conexao.getInputStream(),"UTF-8"));
             String msg;
             byte[] msgCriptografada;
             while (true)
             {
                 msg = entrada.readLine();               
                 Rc4 rc4 = new Rc4("e04fd020ea3a6910a2d808002b30309d");    	
-                msgCriptografada = rc4.encrypt(msg.getBytes(Charset.forName("ISO-8859-1")));
+                msgCriptografada = rc4.encrypt(msg.getBytes(Charset.forName("UTF-8")));
                 
                 try{
-                    msg = new String(msgCriptografada, "ISO-8859-1");
+                    msg = new String(msgCriptografada, "UTF-8");
                     System.out.println(msg);
                 }
                 catch(UnsupportedEncodingException e){

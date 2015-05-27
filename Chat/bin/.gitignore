@@ -1,3 +1,4 @@
-/chat
-/rc4
-/sdes
+/chat/
+/dh/
+/rc4/
+/sdes/

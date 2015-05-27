@@ -20,7 +20,7 @@ public class ClienteSocketSDES extends Thread {
         try {
             Socket socket = new Socket("127.0.0.1", 3000);
             PrintStream saida = new PrintStream(socket.getOutputStream());
-            BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in,"ISO-8859-1"));
+            BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in,"UTF-8"));
             System.out.print("Digite seu nome: ");
             String meuNome = teclado.readLine();
             saida.println(meuNome.toUpperCase());
@@ -43,7 +43,7 @@ public class ClienteSocketSDES extends Thread {
     public void run()
     {
         try {
-            BufferedReader entrada = new BufferedReader(new InputStreamReader(this.conexao.getInputStream(),"ISO-8859-1"));
+            BufferedReader entrada = new BufferedReader(new InputStreamReader(this.conexao.getInputStream(),"UTF-8"));
             String msg, msgDescriptografada;            
             while (true)
             {

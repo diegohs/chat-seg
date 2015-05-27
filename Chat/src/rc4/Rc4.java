@@ -6,6 +6,12 @@
 
 package rc4;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+
 public class Rc4 {
     private final byte[] S = new byte[256];
     private final byte[] T = new byte[256];
@@ -73,23 +79,31 @@ public class Rc4 {
         return data;
     }
     
-    /*
-    public static void main(String args[]) {
-        --Rc4 cripta = new Rc4(hexStringToByteArray("e04fd020ea3a6910a2d808002b30309d"));
-        byte[] response;
-        String decoded = "";
+    
+    public static void main(String args[]) throws IOException {
         
-        String plaintext = "ola";
-        response = cripta.encrypt(plaintext.getBytes(Charset.forName("UTF-8")));
+        byte[] response;
+        String plaintext,decoded = "";
         
         try{
-            decoded = new String(response, "UTF-8");
+        	BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in,"UTF-8"));
+        	while(true){
+        		plaintext = teclado.readLine();
+        		Rc4 cripta = new Rc4("e04fd020ea3a6910a2d808002b30309d");
+            	response = cripta.encrypt(plaintext.getBytes(Charset.forName("UTF-8")));
+                decoded = new String(response, "UTF-8");
+                System.out.println("Criptografado: " + decoded);
+                
+                cripta = new Rc4("e04fd020ea3a6910a2d808002b30309d");
+                response = cripta.encrypt(decoded.getBytes(Charset.forName("UTF-8")));
+                plaintext = new String(response, "UTF-8");
+                System.out.println("Plaintext: " + plaintext);
+                
+        	}        	
         }
         catch(UnsupportedEncodingException e){
             System.err.println(e.getMessage());
         }
-        
-        System.out.println(decoded);
     }
-    */
+    
 }

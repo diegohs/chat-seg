@@ -49,7 +49,7 @@ public class ServidorSocket extends Thread {
 
 	public void run() {
 		try {
-			BufferedReader entrada = new BufferedReader(new InputStreamReader(this.conexao.getInputStream(),"ISO-8859-1"));
+			BufferedReader entrada = new BufferedReader(new InputStreamReader(this.conexao.getInputStream(),"UTF-8"));
 			PrintStream saida = new PrintStream(this.conexao.getOutputStream());
 			this.nomeCliente = entrada.readLine();
 			if (armazena(this.nomeCliente)) {
