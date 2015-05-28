@@ -18,12 +18,24 @@ public class Chat extends Thread {
 	private static String key = "";
 	private static Crypto crypto;
 	
+	public static Crypto getCrypto() {
+		return crypto;
+	}
+
+	public static void setCrypto(String crypto, String key) {
+		setKey(key);
+		if(crypto.equalsIgnoreCase("sdes"))
+			Chat.crypto = new Sdes(key);
+		else if(crypto.equalsIgnoreCase("rc4"))
+			Chat.crypto = new Rc4(key);
+	}
+
 	public static String getKey() {
 		return key;
 	}
 
 	public static void setKey(String key) {
-		Chat.key = key;
+		Chat.key = key;	
 	}
 
 	public Chat(Socket socket) {
@@ -89,15 +101,24 @@ public class Chat extends Thread {
                 while (true)
                 {
                     msg = teclado.readLine();
-                    msgCriptografada = crypto.encrypt(msg.getBytes(Charset.forName("UTF-8")));
-                    
-                    try{
-                    	saida.writeInt(msgCriptografada.length);
-                        saida.write(msgCriptografada);
-                    }
-                    catch(Exception e){
-                        System.err.println(e.getMessage());
-                    }
+                    if(msg.split(":")[0].equalsIgnoreCase("/key")){
+                		setKey(msg.split(":")[1]);
+                		Chat.crypto.alteraChave(key);
+                	} else if(msg.split(":")[0].equalsIgnoreCase("/alg")){
+                		setCrypto(msg.split(":")[1],msg.split(":")[2]);
+                	} else if(msg.split(":")[0].equalsIgnoreCase("/get")){
+                		System.out.println("Key: " + getKey());
+                	} else {
+	            		msgCriptografada = crypto.encrypt(msg.getBytes(Charset.forName("UTF-8")));
+	            	
+	                    try{
+	                    	saida.writeInt(msgCriptografada.length);
+	                        saida.write(msgCriptografada);
+	                    }
+	                    catch(Exception e){
+	                        System.err.println(e.getMessage());
+	                    }
+                	}
                 }
             } catch (IOException e) {
                 System.out.println("Falha na Conexao... .. ." + " IOException: " + e);
@@ -123,7 +144,7 @@ public class Chat extends Thread {
             	}
                 try{
                 	msg = new String(msgCriptografada, Charset.forName("UTF-8"));
-                    System.out.println("Remoto: " + msg);
+                	System.out.println("Remoto: " + msg);
                 }
                 catch(Exception e){
                     System.err.println(e.getMessage());
