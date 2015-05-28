@@ -1,4 +1,4 @@
-package sdes;
+package crypto;
 class BinaryOp
 {
   static int BinToDec(int...bits){

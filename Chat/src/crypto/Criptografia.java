@@ -1,4 +1,4 @@
-package sdes;
+package crypto;
 class Criptografia
 {
   private int[] K1 = new int[8];

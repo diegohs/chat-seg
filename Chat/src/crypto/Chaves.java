@@ -1,4 +1,4 @@
-package sdes;
+package crypto;
 class Chaves{
 	private int[] chave = new int[10];
 	private int[] k1 = new int[8];
