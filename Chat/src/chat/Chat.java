@@ -14,9 +14,10 @@ import crypto.Sdes;
 
 public class Chat extends Thread {
     
-	private Socket conexao;
+	private static Socket conexao;
 	private static String key = "";
 	private static Crypto crypto;
+	private static String alg;
 	
 	public static Crypto getCrypto() {
 		return crypto;
@@ -41,7 +42,7 @@ public class Chat extends Thread {
 	public Chat(Socket socket) {
         this.conexao = socket;
     }
-    
+	
     public static void main(String args[])
     {
     	Socket socket = null;
@@ -52,11 +53,13 @@ public class Chat extends Thread {
     	} else {
     		
     		try {
+    			
+    			alg = args[3];
     		
 	    		if(args[0].equalsIgnoreCase("cliente")){
 	    			String endereco = args[1];
 	            	int porta = Integer.valueOf(args[2]);
-
+	            	
 	            	// Conecta ao servidor
             		socket = new Socket(endereco,porta);
 	    			
@@ -68,29 +71,29 @@ public class Chat extends Thread {
 					socket = server.accept();
 					
 	    		} else {
-	    			System.out.println(": \tchat <cliente> <endereco> <porta>");
-	        		System.out.println("\tchat <servidor> <porta>");
-	        		System.exit(-1);
-	    		}
-	    		
-	    		if(args[3].equalsIgnoreCase("rc4")){
-	    			// Criptografia RC4
-	    	    	setKey("e04fd020ea3a6910a2d808002b30309d");
-	    	    	crypto = new Rc4(getKey());
-	    		} else if(args[3].equalsIgnoreCase("sdes")){
-	    			// Criptografia SDES
-	    	    	setKey("1010000010");
-	    	    	crypto = new Sdes(getKey());
-	    		} else {
-	    			System.out.println(": \tchat <cliente> <endereco> <porta>");
-	        		System.out.println("\tchat <servidor> <porta>");
+	    			System.out.println("Uso: chat <cliente|servidor> <endereco> <porta> <rc4|sdes>");
 	        		System.exit(-1);
 	    		}
 	    		
                 // Inicia a Thread que far� a leitura das mensagens que chegarem
                 Thread thread = new Chat(socket);
                 thread.start();
-
+                
+                // Inicia criptografia
+                if(alg.equalsIgnoreCase("rc4")){
+        			// Criptografia RC4
+                	setKey("1010101010");
+        	    	crypto = new Rc4(getKey());
+        		} else if(alg.equalsIgnoreCase("sdes")){
+        			// Criptografia SDES
+        			setKey("1010101010");
+        	    	crypto = new Sdes(getKey());
+        		} else {
+        			System.out.println(": \tchat <cliente> <endereco> <porta>");
+            		System.out.println("\tchat <servidor> <porta>");
+            		System.exit(-1);
+        		}
+                
                 // Processo para leitura do teclado e envio de mensagens
                 DataOutputStream  saida = new DataOutputStream(socket.getOutputStream()); 
                 BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in,Charset.forName("UTF-8")));
@@ -109,7 +112,7 @@ public class Chat extends Thread {
                 	} else if(msg.split(":")[0].equalsIgnoreCase("/get")){
                 		System.out.println("Key: " + getKey());
                 	} else {
-	            		msgCriptografada = crypto.encrypt(msg.getBytes(Charset.forName("UTF-8")));
+                		msgCriptografada = crypto.encrypt(msg.getBytes(Charset.forName("UTF-8")));
 	            	
 	                    try{
 	                    	saida.writeInt(msgCriptografada.length);
@@ -131,9 +134,11 @@ public class Chat extends Thread {
     {
     	int length;
         try {
-        	DataInputStream  entrada = new DataInputStream(this.conexao.getInputStream());
+        	DataInputStream  entrada = new DataInputStream(conexao.getInputStream());
         	String msg;
             byte[] msgCriptografada = null;
+            
+            // Leitura das mensagens recebidas
             while (true)
             {
             	length = entrada.readInt();
