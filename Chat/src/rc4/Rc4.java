@@ -11,17 +11,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 public class Rc4 {
+	private static String keyBkp;
     private final byte[] S = new byte[256];
     private final byte[] T = new byte[256];
 
     public Rc4(String s) {
+    	keyBkp = String.valueOf(s);
     	alteraChave(s);
     }
     
     public void alteraChave(String s){
-    	byte[] key = hexStringToByteArray(s);
+    	//byte[] key = hexStringToByteArray(s);
+    	
+    	byte[] key = s.getBytes(Charset.forName("UTF-8"));
     	
         if (key.length < 1 || key.length > 256) {
             System.err.println("Chave inválida!");
@@ -35,9 +40,9 @@ public class Rc4 {
             int j = 0;
             byte tmp;
             for (int i = 0; i < 256; i++) {
-                j = (j + S[i] + T[i]) % 256;
+                j = (j + S[i] + T[i]) & 0xff;
                 
-                if(j < 0) j += 256;
+                //if(j < 0) j += 256;
 
                 tmp = S[j];
                 S[j] = S[i];
@@ -53,19 +58,21 @@ public class Rc4 {
         byte tmp;
         
         for (int l = 0; l < plaintext.length; l++) {
-            i = (i + 1) % 256;
-            if(i<0) i+=256;
-            j = (j + S[i]) % 256;
-            if(j<0) j+=256;
+            i = (i + 1) & 0xff; 
+            //if(i<0) i+=256;
+            j = (j + S[i]) & 0xff; 
+            //if(j<0) j+=256;
+            
             tmp = S[j];
             S[j] = S[i];
             S[i] = tmp;
-            t = (S[i] + S[j]) % 256;
-            if(t<0) t+=256;
+            
+            t = (S[i] + S[j]) & 0xff; 
+            //if(t<0) t+=256;
             k = S[t];
             ciphertext[l] = (byte) (plaintext[l] ^ k);
         }
-        
+        alteraChave(keyBkp);
         return ciphertext;
     }
     
@@ -81,22 +88,28 @@ public class Rc4 {
     
     
     public static void main(String args[]) throws IOException {
-        
+    	
+    	
+    	Rc4 cripta = new Rc4("e04fd020ea3a6910a2d808002b30309d");
+    	byte[] conv;
         byte[] response;
         String plaintext,decoded = "";
         
         try{
         	BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in,"UTF-8"));
         	while(true){
+        		plaintext = "";
+        		decoded = "";
+        		
+        		
         		plaintext = teclado.readLine();
-        		Rc4 cripta = new Rc4("e04fd020ea3a6910a2d808002b30309d");
-            	response = cripta.encrypt(plaintext.getBytes(Charset.forName("UTF-8")));
-                decoded = new String(response, "UTF-8");
-                System.out.println("Criptografado: " + decoded);
+        		
+        		conv = plaintext.getBytes(Charset.forName("UTF-8"));        		
+        		response = cripta.encrypt(conv);
+                decoded = new String(response, Charset.forName("UTF-8"));
                 
-                cripta = new Rc4("e04fd020ea3a6910a2d808002b30309d");
-                response = cripta.encrypt(decoded.getBytes(Charset.forName("UTF-8")));
-                plaintext = new String(response, "UTF-8");
+                response = cripta.encrypt(response);
+                plaintext = new String(response, Charset.forName("UTF-8"));
                 System.out.println("Plaintext: " + plaintext);
                 
         	}        	
