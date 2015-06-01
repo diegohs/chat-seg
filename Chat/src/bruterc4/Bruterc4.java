@@ -83,23 +83,13 @@ public class Bruterc4 {
     	Rc4 rc = new Rc4(key);
     	
     	byte[] msgCriptografada;
-    	//String msg;
     	
     	msgCriptografada = rc.encrypt(frase.getBytes(Charset.forName("UTF-8")));
-    	//msg = new String(msgCriptografada, Charset.forName("UTF-8"));
     	
     	System.out.println("O que foi capturado: "+msgCriptografada);
     	
     	bruterc4.reveal(msgCriptografada,key);
     	
     	System.out.println("Fim!");
-    	/*
-    	msgCriptografada = rc.decrypt(msgCriptografada);
-    	msg = new String(msgCriptografada, Charset.forName("UTF-8"));
-    	
-    	System.out.println(msg);
-
-    	System.out.println(new String("pláintext".getBytes(Charset.forName("UTF-8")), Charset.forName("UTF-8")));
-    	*/
     }
 }
