@@ -30,7 +30,7 @@ public class Bruterc4 {
 			":0"
 	};
 	
-	public void reveal(byte[] encripted,String origk){
+	public void reveal(byte[] encripted){
 		String key;
 		Rc4 rcteste = new Rc4("0000000000");
 		
@@ -88,7 +88,8 @@ public class Bruterc4 {
     	
     	System.out.println("O que foi capturado: "+msgCriptografada);
     	
-    	bruterc4.reveal(msgCriptografada,key);
+    	// Tenta revelar o segredo e mensagem criptografada
+    	bruterc4.reveal(msgCriptografada);
     	
     	System.out.println("Fim!");
     }
