@@ -1,5 +1,7 @@
 package crypto;
 
+import java.security.PublicKey;
+
 //import java.nio.charset.Charset;
 
 public class Sdes implements Crypto{
@@ -91,6 +93,24 @@ public class Sdes implements Crypto{
 			saida[i] = (byte) Integer.parseInt(output,2);
 		}
 		return saida;
+	}
+
+	@Override
+	public void setPub(PublicKey pub) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public PublicKey getMyPub() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public byte[] decrypt(byte[] plaintext, byte[] hash) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/*public static void main(String[] args) {

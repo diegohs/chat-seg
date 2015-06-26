@@ -1,5 +1,7 @@
 package crypto;
 
+import java.security.PublicKey;
+
 public class Rc4 implements Crypto {
 	private static String keyBkp;
     private final byte[] S = new byte[256];
@@ -74,5 +76,23 @@ public class Rc4 implements Crypto {
 	@Override
 	public byte[] decrypt(byte[] plaintext) {
 		return encrypt(plaintext);
+	}
+
+	@Override
+	public void setPub(PublicKey pub) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public PublicKey getMyPub() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public byte[] decrypt(byte[] plaintext, byte[] hash) {
+		// TODO Auto-generated method stub
+		return null;
 	}   
 }

@@ -9,7 +9,7 @@ import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
 
-public class RSA implements Crypto {
+public class MainClass {
 
 	private KeyPairGenerator kpg;
 	private KeyPair keyPair;
@@ -31,7 +31,7 @@ public class RSA implements Crypto {
 		
 	}
 
-	public RSA() {
+	public MainClass() {
 
 		try {
 			kpg = KeyPairGenerator.getInstance("RSA");
@@ -45,12 +45,6 @@ public class RSA implements Crypto {
 	}
 
 
-	@Override
-	public void alteraChave(String s) {
-
-	}
-
-	@Override
 	public byte[] encrypt(byte[] plaintext) {
 
 		try {
@@ -67,28 +61,30 @@ public class RSA implements Crypto {
 		return null;
 	}
 
-	@Override
-	public byte[] decrypt(byte[] plaintext){
-		return plaintext;
+	public boolean decrypt(byte[] hash,byte[] plaintext) {
 		
+
+			//sig.initVerify(keyPair.getPublic());
+			try {
+				sig.initVerify(keyPair.getPublic());
+				sig.update(plaintext);
+				return sig.verify(hash);
+				
+			} catch (InvalidKeyException | SignatureException e) {
+				
+				e.printStackTrace();
+			}
+			
+			return false;
 	}
 	
-	public byte[] decrypt(byte[] plaintext, byte[] hash) {
+	public static void main(String[] args) throws Exception {
+		MainClass rsa = new MainClass();
 		
-		try {
-			sig.initVerify(pub);
-			sig.update(plaintext);
-			if(sig.verify(hash)){
-				return "true".getBytes("UTF8");
-			} else {
-				return "false".getBytes("UTF8");
-			}
-						
-			
-		} catch (InvalidKeyException | SignatureException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		byte[] texto = "diego".getBytes("UTF8");
+		byte[] hash = rsa.encrypt(texto);
 		
-		return null;
+		System.out.println(rsa.decrypt(hash, texto));
+		
 	}
 }
